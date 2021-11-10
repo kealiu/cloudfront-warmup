@@ -9,14 +9,14 @@ Cloudfront is the CDN of AWS. In the following case, you may want speed up the u
 
 1. [download & install python3.8](https://wiki.python.org/moin/BeginnersGuide/Download)
 1. install dependences:
-```
-pip install -r requestments.txt
-```
+    ```
+    pip install -r requestments.txt
+    ```
 1. edit `urls.txt` one url path per line
 1. run this script with your distribution's `cloudfront.net` (`cloudfront.cn` in China) domain
-```
-python warmup.py dxxxxxxxxxx.cloudfront.net urls.txt 2>/dev/null
-```
+    ```
+    python warmup.py dxxxxxxxxxx.cloudfront.net urls.txt 2>/dev/null
+    ```
 
 # configuration
 
@@ -37,3 +37,5 @@ in the `warmup.py`, you can see the configurations:
 }
 ```
 
+# Reference
+[nwcd-samples cloudfront warmup](https://github.com/nwcd-samples/cloudfront-prewarm/)
