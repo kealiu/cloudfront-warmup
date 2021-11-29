@@ -3,7 +3,7 @@
 import os
 import sys
 import requests
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 from bs4 import BeautifulSoup
 
 _gcfg = {
@@ -16,7 +16,7 @@ _gcfg = {
     "https": False,  # enable https url
     "china": False,  # in case china cloudfront
     "threads": 200,  # how many threads 
-    "timeout": 10,  # url connection timeout
+    "timeout": (3,3),  # url connection timeout
     "origin": ""    # origin domain(optional)
 }
 
@@ -66,7 +66,7 @@ def cf_pops_url_warmup(url):
 
 def cf_refresh_task(origin, urls):
     # for multi processing
-    with Pool(_gcfg['threads']) as p:
+    with ThreadPool(_gcfg['threads']) as p:
         p.map(cf_pops_url_warmup, cf_url_gen(origin, urls))
 
     # for single thread
