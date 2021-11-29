@@ -61,7 +61,7 @@ def cf_pops_url_warmup(url):
         else:
             print("SUCCESS: %s warmup done!"%url)
     except Exception as e:
-        print("error: %s %s"%(type(e).__name__, url)) # didn't care the output
+        print("error: %s %s"%(str(e), url)) # didn't care the output
     return None
 
 def cf_refresh_task(origin, urls):
