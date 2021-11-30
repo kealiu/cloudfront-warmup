@@ -17,7 +17,9 @@ _gcfg = {
     "china": False,  # in case china cloudfront
     "threads": 200,  # how many threads 
     "timeout": (3,3),  # url connection timeout
-    "origin": ""    # origin domain(optional)
+    "origin": "",   # origin domain(optional)
+    "cname" : "",    # the cname
+    "action": "GET" # the http action
 }
 
 def cf_pops_code_get():
@@ -55,7 +57,7 @@ def cf_url_gen(origin, urls):
 
 def cf_pops_url_warmup(url):
     try:
-        r = requests.get(url, headers={"Host": _gcfg['origin']}, verify=False, timeout=_gcfg['timeout'])
+        r = requests.request(_gcfg['action'], url, headers={"Host": _gcfg['cname']}, verify=False, timeout=_gcfg['timeout'])
         if r.status_code >= 400:
             print("warning: %s refreshing failing, ignore!!!"%url)
         else:
@@ -75,10 +77,14 @@ def cf_refresh_task(origin, urls):
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print('Usage: %s <dxxxxxxxx.cloudfront.net-of-cloudfront-distribution> <url-per-line-file>')
+        print('Usage: %s <dxxxxxxxx.cloudfront.net-of-cloudfront-distribution> <file-named-as-domain-with-url-per-line-in-it> [GET|HEAD|OPTION]')
         exit(-1)
     urls = []
     with open(sys.argv[2], 'r') as uf:
         urls = [u.strip() if u.startswith('/') else '/'+u.strip() for u in uf.readlines()]
     _gcfg['origin'] = sys.argv[1]
+    _gcfg['cname'] = sys.argv[2]
+    _gcfg['action'] = 'GET'
+    if len(sys.argv) == 4 and sys.argv[3] in ['GET', 'HEAD', 'OPTION']:
+        _gcfg['action'] = sys.argv[3]
     cf_refresh_task(sys.argv[1], urls)
