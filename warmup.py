@@ -2,43 +2,33 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import json
 import requests
 from multiprocessing.pool import ThreadPool
-from bs4 import BeautifulSoup
 
 _gcfg = {
-    "pops": {
-        "addones": [],  # in case you find new edge-pop code
-        "source": "https://www.feitsui.com/zh-hans/article/3",  # the sources of edge-pop code
-        "china": ['BJS9-E1', 'PVG52-E1', 'SZX51-E1', 'ZHY50-E1']  # the sources of edge-pop code for china
-     },
     "http": True,   # enable http url
-    "https": False,  # enable https url
-    "china": False,  # in case china cloudfront
+    "https": True,  # enable https url
+    "mainland": False,  # in case china mainland cloudfront
     "threads": 200,  # how many threads 
     "timeout": (3,3),  # url connection timeout
     "origin": "",   # origin domain(optional)
     "cname" : "",    # the cname
-    "action": "GET" # the http action
+    "action": "GET", # the http action
+    "pops" : {
+        "global": "edges.global.json", 
+        "mainland": "edges.mainland.json"
+    }
 }
 
 def cf_pops_code_get():
-    codes = []
+    popfilename = _gcfg['pops']['global']
+    # china mainland cloudfront pop, hardcode now
+    if _gcfg['mainland']:
+        popfilename = _gcfg['pops']['mainland']
 
-    # china cloudfront pop, hardcode now
-    if _gcfg['china']:
-        return _gcfg['pops']['china']
-
-    # global cloudfront pop 
-    r = requests.get(_gcfg['pops']['source'])
-    soup = BeautifulSoup(r.text, 'html.parser')
-    for tr in soup.find_all('tr'):
-        c = tr.find('td')
-        if c:
-            codes.append(c.text)
-    if _gcfg['pops']['addones']:
-        codes += _gcfg['pops']['addones']
-    return codes
+    with open(popfilename) as popfs:
+        return json.load(popfs)
 
 def cf_pops_domain_gen(origin):
     doaminparts = origin.split('.')

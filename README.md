@@ -21,6 +21,14 @@ Cloudfront is the CDN of AWS. In the following case, you may want speed up the u
     pip install -r requestments.txt
     ```
 1. edit `cname.mydomain.com` , one url path per line. 
+1. (optional) update cloudfront edge pop information
+   ```
+   # global cloudfront
+   python edgecode.py
+   # in case china mainland cloudfront
+   python edgecode.py mainland
+   ```
+1. (optional) if you know new edge code, just add it into `edges.global.json` or `edges.mainland.json` accordingly.
 1. run this script with your distribution's `cloudfront.net` (`cloudfront.cn` in China) domain
     ```
     python warmup.py dxxxxxxxxxx.cloudfront.net cname.mydomain.com GET 2>/dev/null
@@ -33,16 +41,18 @@ Cloudfront is the CDN of AWS. In the following case, you may want speed up the u
 in the `warmup.py`, you can see the configurations:
 ```
 {
-    "pops": {
-        "addones": [],  # in case you find new edge-pop code
-        "source": "https://www.feitsui.com/zh-hans/article/3",  # the sources of edge-pop code
-        "china": ['BJS9-E1', 'PVG52-E1', 'SZX51-E1', 'ZHY50-E1']  # the sources of edge-pop code for china
-     },
     "http": True,   # enable http url
-    "https": False,  # enable https url
-    "china": False,  # in case china cloudfront
+    "https": True,  # enable https url
+    "mainland": False,  # in case china mainland cloudfront
     "threads": 200,  # how many threads 
-    "timeout": 10,  # url connection timeout
+    "timeout": (3,3),  # url connection timeout
+    "origin": "",   # origin domain(optional)
+    "cname" : "",    # the cname
+    "action": "GET", # the http action
+    "pops" : {
+        "global": "edges.global.json",    # the pop config file of global cloudfront
+        "mainland": "edges.mainland.json"  # the pop config file of china mainland cloudfront
+    }
 }
 ```
 
