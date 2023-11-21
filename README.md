@@ -14,7 +14,14 @@ assumption:
 You **should replace this domains** when execute your commands.
 
 1. update edge code: `python edgecode.py`(for global regions) or `python edgecode.py mainland` (for China mainland regions)
-1. create a text file, named it as `www.myawesomeweb.com` (as your website domain), with file path per line in it
+1. create a text file, named it as `www.myawesomeweb.com` (as your website domain), with URL path per line in it
+```
+/index.html
+/my/aws/some/css
+/other/smart/js
+/or/other/pictures
+/any/pathname/you/want/to/warmup
+```
 1. `python warmup.py d12345678.cloudfront.net www.myawesomeweb.com [GET|HEAD|OPTION]`
     - the `HEAD`/`OPTION` only used in special case, default is `GET`
     - if your cloudfront distribute does not have CNAME defined, just use `d12345678.cloudfront.net` as CNAME
