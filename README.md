@@ -5,13 +5,21 @@ Cloudfront is the CDN of AWS. In the following case, you may want speed up the u
 1. new content added: this script touch each of the CDN edge pop and make the contents cached in them.
 1. contents updated: you need to [invalidate these contents](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html) firstly, and then use this script.
 
-## usage
+## step by step
 
-1. a text file, named as CNAME of your cloudfront distribution, with file path per line in it
-1. `python warmup.py <dxxxxxxxxxx.cloudfront.net> <cname.mydomain.com> [GET|HEAD|OPTION]`
+assumption:
+- AWS Cloudfront domain: `d12345678.cloudfront.net`
+- Your site domain: `www.myawesomeweb.com`
+
+You **should replace this domains** when execute your commands.
+
+1. update edge code: `python edgecode.py`(for global regions) or `python edgecode.py mainland` (for China mainland regions)
+1. create a text file, named it as `www.myawesomeweb.com` (as your website domain), with file path per line in it
+1. `python warmup.py d12345678.cloudfront.net www.myawesomeweb.com [GET|HEAD|OPTION]`
     - the `HEAD`/`OPTION` only used in special case, default is `GET`
-    - if no CNAME defined, just use the `dxxxxxxxxxx.cloudfront.net` as CNAME
-1. if you distribution has many CNAME, and many actions, you can write your owner shell loop to execute it, this script ONLY for one CNAME & action in one time
+    - if your cloudfront distribute does not have CNAME defined, just use `d12345678.cloudfront.net` as CNAME
+  
+*NOTES*: if you distribution has many CNAME, and many actions, you can write your owner shell loop to execute it, this script ONLY for one CNAME & action in one time
 
 ## setup environment
 
